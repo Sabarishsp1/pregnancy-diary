@@ -1,836 +1,832 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Subharathna's Food Diary</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #fdf7f4; min-height: 100vh; padding-bottom: 110px; }
 
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: #fdf7f4;
-    min-height: 100vh;
-    padding-bottom: 100px;
-  }
+/* ── SETUP ── */
+#setup-screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; background:linear-gradient(160deg,#fdf7f4,#fceee8); }
+#setup-screen h1 { font-size:22px; font-weight:800; color:#2d1a12; margin-bottom:6px; text-align:center; }
+#setup-screen p { font-size:13px; color:#a07060; text-align:center; margin-bottom:28px; line-height:1.6; }
+.setup-card { background:white; border-radius:20px; padding:24px; width:100%; max-width:420px; box-shadow:0 4px 24px rgba(200,100,70,.12); }
+.setup-card label { display:block; font-size:12px; font-weight:700; color:#7a4a3a; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+.setup-card input,.setup-card textarea { width:100%; border:1.5px solid #ece0d8; border-radius:10px; padding:11px 13px; font-size:13px; color:#333; background:#fdfaf8; outline:none; margin-bottom:16px; font-family:inherit; }
+.setup-card textarea { height:90px; resize:none; font-size:11px; font-family:monospace; }
+.setup-card input:focus,.setup-card textarea:focus { border-color:#e8735a; }
+.warning-box { background:#fff8e1; border:1.5px solid #ffe082; border-radius:12px; padding:12px 14px; font-size:12px; color:#7a6000; margin-bottom:20px; line-height:1.6; }
 
-  /* SETUP SCREEN */
-  #setup-screen {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background: linear-gradient(160deg, #fdf7f4 0%, #fceee8 100%);
-  }
+/* ── NAV ── */
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid #f0e8e4; display:flex; z-index:30; box-shadow:0 -2px 12px rgba(0,0,0,.06); }
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 0 14px; border:none; background:none; cursor:pointer; color:#bbb; font-size:10px; font-weight:600; gap:3px; transition:color .2s; }
+.nav-btn .nav-icon { font-size:20px; }
+.nav-btn.active { color:#e8735a; }
 
-  #setup-screen h1 {
-    font-size: 22px;
-    font-weight: 800;
-    color: #2d1a12;
-    margin-bottom: 6px;
-    text-align: center;
-  }
+/* ── HEADER ── */
+.header { background:linear-gradient(135deg,#e8735a,#c9563e); color:white; padding:0 0 18px; text-align:center; border-radius:0 0 28px 28px; box-shadow:0 4px 20px rgba(201,86,62,.3); position:sticky; top:0; z-index:10; overflow:hidden; }
+.header-illustration { width:100%; height:140px; display:flex; align-items:flex-end; justify-content:center; position:relative; padding-top:12px; }
+.header-text { padding:0 20px 0; }
+.header h1 { font-size:18px; font-weight:800; letter-spacing:-.3px; }
+.header .date-label { font-size:12px; opacity:.85; margin-top:3px; }
+.progress-bar-wrap { background:rgba(255,255,255,.2); border-radius:20px; height:6px; margin:10px 20px 0; overflow:hidden; }
+.progress-bar-fill { height:100%; background:white; border-radius:20px; transition:width .4s ease; }
+.progress-label { font-size:11px; opacity:.85; margin-top:5px; padding-bottom:4px; }
 
-  #setup-screen p {
-    font-size: 13px;
-    color: #a07060;
-    text-align: center;
-    margin-bottom: 28px;
-    line-height: 1.6;
-  }
+/* ── CONTENT ── */
+.screen { display:none; }
+.screen.active { display:block; }
+.content { padding:16px; max-width:520px; margin:0 auto; }
 
-  .setup-card {
-    background: white;
-    border-radius: 20px;
-    padding: 24px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 4px 24px rgba(200,100,70,0.12);
-  }
+/* ── CARDS ── */
+.card { background:white; border-radius:18px; padding:16px 18px; margin-bottom:14px; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+.card-title { font-size:13px; font-weight:700; color:#7a4a3a; margin-bottom:10px; }
 
-  .setup-card label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: #7a4a3a;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+/* ── WATER ── */
+.water-track { margin-top:6px; }
+.water-bottles { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.water-bottle { width:32px; height:44px; border-radius:6px 6px 8px 8px; border:2px solid #e0d0c8; background:#f9f4f1; position:relative; overflow:hidden; cursor:pointer; transition:border-color .2s; flex-shrink:0; }
+.water-bottle.filled { border-color:#5ba3d9; }
+.water-bottle .fill { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(180deg,#7ec8f5,#4a90d9); border-radius:0 0 5px 5px; transition:height .3s ease; }
+.water-bottle:not(.filled) .fill { height:0%; }
+.water-bottle.filled .fill { height:100%; }
+.water-bottle .half-mark { position:absolute; left:0; right:0; top:50%; border-top:1px dashed rgba(255,255,255,.5); z-index:1; }
+.water-info { display:flex; align-items:center; justify-content:space-between; }
+.water-ml { font-size:20px; font-weight:800; color:#4a90d9; }
+.water-target { font-size:11px; color:#aaa; }
+.water-controls-row { display:flex; gap:8px; margin-top:10px; }
+.water-ctrl-btn { flex:1; border:none; border-radius:10px; padding:10px; font-size:13px; font-weight:700; cursor:pointer; transition:opacity .2s; }
+.water-ctrl-btn.minus { background:#fde8e3; color:#c9563e; }
+.water-ctrl-btn.plus { background:#e3f0fb; color:#4a90d9; }
+.water-ctrl-btn:active { opacity:.8; }
 
-  .setup-card input, .setup-card textarea {
-    width: 100%;
-    border: 1.5px solid #ece0d8;
-    border-radius: 10px;
-    padding: 11px 13px;
-    font-size: 13px;
-    color: #333;
-    background: #fdfaf8;
-    outline: none;
-    margin-bottom: 16px;
-    font-family: inherit;
-  }
+/* ── WALK ── */
+.walk-row { display:flex; align-items:center; gap:12px; }
+.walk-display { flex:1; }
+.walk-mins { font-size:28px; font-weight:800; color:#43a047; }
+.walk-label { font-size:11px; color:#aaa; }
+.walk-controls { display:flex; gap:6px; }
+.walk-btn { width:36px; height:36px; border-radius:10px; border:none; font-size:15px; font-weight:700; cursor:pointer; }
+.walk-btn.minus { background:#e8f5e9; color:#388e3c; }
+.walk-btn.plus  { background:#e8f5e9; color:#388e3c; }
+.walk-goal-bar { margin-top:10px; background:#f0f0f0; border-radius:20px; height:6px; overflow:hidden; }
+.walk-goal-fill { height:100%; background:linear-gradient(90deg,#66bb6a,#43a047); border-radius:20px; transition:width .4s; }
 
-  .setup-card textarea {
-    height: 90px;
-    resize: none;
-    font-size: 11px;
-    font-family: monospace;
-  }
+/* ── MEAL CARDS ── */
+.meal-card { background:white; border-radius:18px; padding:16px 18px; margin-bottom:12px; box-shadow:0 2px 12px rgba(0,0,0,.06); border-left:4px solid #f0ebe6; transition:border-color .3s; }
+.meal-card.filled { border-left-color:#e8735a; }
+.meal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.meal-title { font-size:14px; font-weight:700; color:#2d1a12; }
+.meal-time { font-size:11px; color:#bbb; margin-top:2px; }
+.logged-badge { background:#e8f5e9; color:#388e3c; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:600; flex-shrink:0; }
+.meal-input { width:100%; border:1.5px solid #ece6e1; border-radius:10px; padding:10px 12px; font-size:13px; color:#333; background:#fdfaf8; outline:none; margin-bottom:8px; font-family:inherit; }
+.meal-input:focus { border-color:#e8735a; }
+.meal-input::placeholder { color:#ccc; }
 
-  .setup-card input:focus, .setup-card textarea:focus {
-    border-color: #e8735a;
-  }
+/* ── NOTES ── */
+.notes-card textarea { width:100%; border:1.5px solid #ece6e1; border-radius:10px; padding:10px 12px; font-size:13px; color:#444; background:#fdfaf8; outline:none; resize:none; font-family:inherit; height:80px; }
+.notes-card textarea:focus { border-color:#e8735a; }
 
-  .btn-primary {
-    width: 100%;
-    background: linear-gradient(135deg, #e8735a, #c9563e);
-    color: white;
-    border: none;
-    border-radius: 14px;
-    padding: 15px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(201,86,62,0.3);
-    transition: opacity 0.2s;
-  }
+/* ── TIPS ── */
+.tips-card { background:linear-gradient(135deg,#fff8f6,#fef3ef); border:1.5px solid #fdddd5; border-radius:18px; padding:16px 18px; margin-bottom:14px; }
+.tips-title { font-size:13px; font-weight:700; color:#c9563e; margin-bottom:8px; }
+.tip-item { font-size:12px; color:#7a4a3a; margin-bottom:5px; display:flex; gap:8px; line-height:1.5; }
+.tip-dot { color:#e8735a; font-weight:700; flex-shrink:0; }
 
-  .btn-primary:active { opacity: 0.85; }
+/* ── SAVE BTN ── */
+.save-wrap { position:fixed; bottom:56px; left:0; right:0; padding:10px 16px; background:linear-gradient(to top,#fdf7f4 70%,transparent); z-index:20; }
+.save-btn { width:100%; max-width:520px; margin:0 auto; display:block; background:linear-gradient(135deg,#e8735a,#c9563e); color:white; border:none; border-radius:16px; padding:15px; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(201,86,62,.35); transition:all .3s; }
+.save-btn.success { background:linear-gradient(135deg,#43a047,#388e3c); }
+.save-btn.loading { opacity:.7; cursor:not-allowed; }
 
-  .warning-box {
-    background: #fff8e1;
-    border: 1.5px solid #ffe082;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 12px;
-    color: #7a6000;
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
+/* ── WEIGHT ── */
+.weight-card { background:white; border-radius:18px; padding:16px 18px; margin-bottom:14px; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+.weight-row { display:flex; align-items:center; gap:12px; }
+.weight-display { flex:1; }
+.weight-val { font-size:28px; font-weight:800; color:#9c27b0; }
+.weight-unit { font-size:13px; color:#aaa; font-weight:600; }
+.weight-controls { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+.weight-btn { border:none; border-radius:10px; padding:8px 12px; font-size:13px; font-weight:700; cursor:pointer; background:#f3e5f5; color:#7b1fa2; }
+.weight-btn:active { opacity:.8; }
+.weight-input-wrap { margin-top:10px; display:flex; gap:8px; align-items:center; }
+.weight-input { flex:1; border:1.5px solid #e1bee7; border-radius:10px; padding:9px 12px; font-size:15px; font-weight:700; color:#4a148c; background:#fdf5ff; outline:none; font-family:inherit; text-align:center; }
+.weight-input:focus { border-color:#9c27b0; }
+.weight-save-btn { background:linear-gradient(135deg,#ab47bc,#7b1fa2); color:white; border:none; border-radius:10px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
 
-  /* MAIN APP */
-  #app-screen { display: none; }
+/* ── WEIGHT TREND (dashboard) ── */
+.trend-card { background:white; border-radius:18px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,0,0,.06); margin-bottom:14px; }
+.trend-title { font-size:13px; font-weight:700; color:#7a4a3a; margin-bottom:14px; }
+.trend-weeks { display:flex; flex-direction:column; gap:10px; }
+.trend-week-row { display:flex; align-items:center; gap:10px; }
+.trend-week-label { font-size:11px; color:#aaa; width:60px; flex-shrink:0; }
+.trend-week-weight { font-size:18px; font-weight:800; color:#9c27b0; width:56px; }
+.trend-diff { font-size:12px; font-weight:700; border-radius:20px; padding:3px 10px; }
+.trend-diff.up   { background:#fde8e3; color:#c9563e; }
+.trend-diff.down { background:#e8f5e9; color:#388e3c; }
+.trend-diff.same { background:#f5f5f5; color:#aaa; }
+.trend-bar-wrap { flex:1; background:#f3e5f5; border-radius:10px; height:8px; overflow:hidden; }
+.trend-bar-fill { height:100%; background:linear-gradient(90deg,#ce93d8,#9c27b0); border-radius:10px; transition:width .4s; }
+.trend-empty { font-size:12px; color:#bbb; text-align:center; padding:16px 0; }
 
-  .header {
-    background: linear-gradient(135deg, #e8735a 0%, #c9563e 100%);
-    color: white;
-    padding: 28px 20px 22px;
-    text-align: center;
-    border-radius: 0 0 28px 28px;
-    box-shadow: 0 4px 20px rgba(201,86,62,0.3);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+/* ── TOAST ── */
+.toast { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-80px); background:#2d2d2d; color:white; padding:10px 20px; border-radius:20px; font-size:13px; font-weight:600; z-index:100; transition:transform .3s ease; white-space:nowrap; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+.toast.error { background:#c9563e; }
+.toast.success-toast { background:#388e3c; }
 
-  .header-emoji { font-size: 26px; margin-bottom: 4px; }
-  .header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
-  .header .date { font-size: 12px; opacity: 0.85; margin-top: 3px; }
+/* ── DASHBOARD ── */
+.dash-header { background:linear-gradient(135deg,#e8735a,#c9563e); color:white; padding:24px 20px 20px; border-radius:0 0 28px 28px; margin-bottom:16px; text-align:center; }
+.dash-header h2 { font-size:18px; font-weight:800; }
+.dash-header p { font-size:12px; opacity:.85; margin-top:4px; }
+.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:16px; }
+.week-day { background:white; border-radius:12px; padding:8px 4px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.week-day .day-name { font-size:9px; color:#aaa; font-weight:700; text-transform:uppercase; }
+.week-day .day-num { font-size:14px; font-weight:800; color:#2d1a12; margin:2px 0; }
+.week-day .day-dot { width:8px; height:8px; border-radius:50%; margin:0 auto; background:#f0f0f0; }
+.week-day.logged .day-dot { background:#e8735a; }
+.week-day.today { background:linear-gradient(135deg,#fde8e3,#fdddd5); }
+.week-day.today .day-num { color:#c9563e; }
 
-  .progress-bar-wrap {
-    background: rgba(255,255,255,0.2);
-    border-radius: 20px;
-    height: 6px;
-    margin: 12px 20px 0;
-    overflow: hidden;
-  }
+.stat-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.stat-card { background:white; border-radius:16px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,.06); text-align:center; }
+.stat-val { font-size:26px; font-weight:800; color:#e8735a; }
+.stat-label { font-size:11px; color:#aaa; margin-top:3px; }
 
-  .progress-bar-fill {
-    height: 100%;
-    background: white;
-    border-radius: 20px;
-    transition: width 0.4s ease;
-  }
+.week-detail { background:white; border-radius:18px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,0,0,.06); margin-bottom:14px; }
+.week-detail-title { font-size:13px; font-weight:700; color:#7a4a3a; margin-bottom:12px; }
+.day-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f5f0ec; }
+.day-row:last-child { border-bottom:none; }
+.day-row-name { font-size:12px; font-weight:700; color:#2d1a12; width:36px; flex-shrink:0; }
+.day-row-bars { flex:1; display:flex; gap:3px; }
+.meal-pip { height:8px; border-radius:4px; flex:1; background:#f0ebe6; transition:background .3s; }
+.meal-pip.done { background:#e8735a; }
+.day-row-stats { display:flex; gap:8px; font-size:10px; color:#aaa; flex-shrink:0; }
+.day-stat { display:flex; align-items:center; gap:2px; }
 
-  .progress-label {
-    font-size: 11px;
-    opacity: 0.85;
-    margin-top: 5px;
-  }
-
-  .content { padding: 16px; max-width: 520px; margin: 0 auto; }
-
-  /* WATER */
-  .water-card {
-    background: white;
-    border-radius: 18px;
-    padding: 16px 18px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-
-  .card-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #7a4a3a;
-    margin-bottom: 10px;
-  }
-
-  .water-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .water-btn {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    border: none;
-    background: #fde8e3;
-    color: #c9563e;
-    font-size: 20px;
-    cursor: pointer;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .water-dots {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    flex: 1;
-  }
-
-  .water-dot {
-    width: 26px; height: 26px;
-    border-radius: 8px;
-    background: #f0f0f0;
-    transition: background 0.2s;
-  }
-
-  .water-dot.filled { background: #e8735a; }
-
-  .water-label {
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 6px;
-  }
-
-  /* MEAL CARDS */
-  .meal-card {
-    background: white;
-    border-radius: 18px;
-    padding: 16px 18px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    border-left: 4px solid #f0ebe6;
-    transition: border-color 0.3s;
-  }
-
-  .meal-card.filled { border-left-color: #e8735a; }
-
-  .meal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-  }
-
-  .meal-title { font-size: 14px; font-weight: 700; color: #2d1a12; }
-  .meal-time { font-size: 11px; color: #bbb; margin-top: 2px; }
-
-  .logged-badge {
-    background: #e8f5e9;
-    color: #388e3c;
-    border-radius: 20px;
-    padding: 2px 10px;
-    font-size: 11px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-
-  .meal-input {
-    width: 100%;
-    border: 1.5px solid #ece6e1;
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 13px;
-    color: #333;
-    background: #fdfaf8;
-    outline: none;
-    margin-bottom: 8px;
-    font-family: inherit;
-  }
-
-  .meal-input:focus { border-color: #e8735a; }
-  .meal-input::placeholder { color: #ccc; }
-
-  /* NOTES */
-  .notes-card {
-    background: white;
-    border-radius: 18px;
-    padding: 16px 18px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-
-  .notes-card textarea {
-    width: 100%;
-    border: 1.5px solid #ece6e1;
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 13px;
-    color: #444;
-    background: #fdfaf8;
-    outline: none;
-    resize: none;
-    font-family: inherit;
-    height: 80px;
-  }
-
-  .notes-card textarea:focus { border-color: #e8735a; }
-
-  /* TIPS */
-  .tips-card {
-    background: linear-gradient(135deg, #fff8f6, #fef3ef);
-    border: 1.5px solid #fdddd5;
-    border-radius: 18px;
-    padding: 16px 18px;
-    margin-bottom: 14px;
-  }
-
-  .tips-title { font-size: 13px; font-weight: 700; color: #c9563e; margin-bottom: 8px; }
-
-  .tip-item {
-    font-size: 12px;
-    color: #7a4a3a;
-    margin-bottom: 5px;
-    display: flex;
-    gap: 8px;
-    line-height: 1.5;
-  }
-
-  .tip-dot { color: #e8735a; font-weight: 700; flex-shrink: 0; }
-
-  /* SAVE BUTTON */
-  .save-wrap {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    padding: 16px;
-    background: linear-gradient(to top, #fdf7f4 70%, transparent);
-    z-index: 20;
-  }
-
-  .save-btn {
-    width: 100%;
-    max-width: 520px;
-    margin: 0 auto;
-    display: block;
-    background: linear-gradient(135deg, #e8735a, #c9563e);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(201,86,62,0.35);
-    transition: all 0.3s;
-  }
-
-  .save-btn.success {
-    background: linear-gradient(135deg, #43a047, #388e3c);
-    box-shadow: 0 4px 16px rgba(56,142,60,0.35);
-  }
-
-  .save-btn.loading { opacity: 0.7; cursor: not-allowed; }
-
-  .tagline {
-    text-align: center;
-    font-size: 11px;
-    color: #ccc;
-    margin-top: 10px;
-    padding-bottom: 4px;
-  }
-
-  /* TOAST */
-  .toast {
-    position: fixed;
-    top: 20px; left: 50%;
-    transform: translateX(-50%) translateY(-80px);
-    background: #2d2d2d;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 100;
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { background: #c9563e; }
-  .toast.success-toast { background: #388e3c; }
+.btn-primary { width:100%; background:linear-gradient(135deg,#e8735a,#c9563e); color:white; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(201,86,62,.3); transition:opacity .2s; }
+.btn-primary:active { opacity:.85; }
 </style>
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- SETUP SCREEN -->
+<!-- ══ SETUP ══ -->
 <div id="setup-screen">
-  <div style="font-size:36px;margin-bottom:12px;">🤰</div>
+  <svg width="80" height="100" viewBox="0 0 80 100" fill="none" style="margin-bottom:16px">
+    <ellipse cx="40" cy="88" rx="22" ry="8" fill="#fdddd5"/>
+    <path d="M28 85 Q24 70 26 55 Q28 35 40 28 Q52 35 54 55 Q56 70 52 85 Z" fill="#f4a898"/>
+    <circle cx="40" cy="20" r="14" fill="#f4a898"/>
+    <path d="M32 18 Q40 14 48 18" stroke="#c9563e" stroke-width="1.5" fill="none"/>
+    <circle cx="35" cy="19" r="2" fill="#c9563e"/>
+    <circle cx="45" cy="19" r="2" fill="#c9563e"/>
+    <ellipse cx="40" cy="62" rx="13" ry="16" fill="#f9d0c4"/>
+    <path d="M28 55 Q22 60 24 72 Q26 80 28 85" stroke="#f4a898" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M52 55 Q58 60 56 72 Q54 80 52 85" stroke="#f4a898" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M34 85 Q36 90 40 92 Q44 90 46 85" stroke="#f4a898" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M36 85 Q38 88 40 89 Q42 88 44 85" stroke="#c9a090" stroke-width="1.5" fill="none"/>
+  </svg>
   <h1>Subharathna's Food Diary</h1>
-  <p>One-time setup — paste your Google service account credentials below. These are stored only on this device.</p>
-
+  <p>One-time setup — paste your Google service<br/>account credentials below.</p>
   <div class="setup-card">
-    <div class="warning-box">
-      🔐 Your credentials stay on this device only — never sent anywhere except Google's servers directly.
-    </div>
-
+    <div class="warning-box">🔐 Credentials stay on this device only — sent directly to Google's servers.</div>
     <label>Spreadsheet ID</label>
-    <input type="text" id="sheet-id" placeholder="Paste your Google Sheet ID here" />
-
+    <input type="text" id="sheet-id" placeholder="Paste your Google Sheet ID here"/>
     <label>Client Email</label>
-    <input type="text" id="client-email" placeholder="pregnancy-diary@....iam.gserviceaccount.com" />
-
-    <label>Private Key (paste full key including -----BEGIN... END-----)</label>
+    <input type="text" id="client-email" placeholder="pregnancy-diary@....iam.gserviceaccount.com"/>
+    <label>Private Key (full -----BEGIN ... END-----)</label>
     <textarea id="private-key" placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
-
     <button class="btn-primary" onclick="saveSetup()">Connect to Google Sheets →</button>
   </div>
-
-  <p style="margin-top:16px;font-size:11px;color:#ccc;">
-    Find Sheet ID in your sheet's URL:<br/>
-    docs.google.com/spreadsheets/d/<strong>[THIS PART]</strong>/edit
-  </p>
+  <p style="margin-top:14px;font-size:11px;color:#ccc;">Sheet ID is in your sheet's URL between /d/ and /edit</p>
 </div>
 
-<!-- MAIN APP -->
-<div id="app-screen">
-  <div class="header">
-    <div class="header-emoji">🤰</div>
-    <h1>Subharathna's Food Diary</h1>
-    <div class="date" id="today-label"></div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
-    </div>
-    <div class="progress-label" id="progress-label">0 / 7 meals logged</div>
-  </div>
+<!-- ══ MAIN APP ══ -->
+<div id="app-screen" style="display:none">
 
-  <div class="content">
-
-    <!-- Water -->
-    <div class="water-card">
-      <div class="card-title">💧 Water Intake</div>
-      <div class="water-controls">
-        <button class="water-btn" onclick="changeWater(-1)">−</button>
-        <div style="flex:1">
-          <div class="water-dots" id="water-dots"></div>
-          <div class="water-label" id="water-label">0 glasses · Target: 8–10/day</div>
+  <!-- ── DIARY SCREEN ── -->
+  <div id="screen-diary" class="screen active">
+    <div class="header">
+      <div class="header-illustration">
+        <svg width="90" height="120" viewBox="0 0 90 120" fill="none">
+          <!-- body -->
+          <path d="M32 110 Q28 90 30 68 Q32 42 45 33 Q58 42 60 68 Q62 90 58 110 Z" fill="rgba(255,255,255,0.25)"/>
+          <!-- baby bump highlight -->
+          <ellipse cx="45" cy="78" rx="15" ry="18" fill="rgba(255,255,255,0.15)"/>
+          <!-- head -->
+          <circle cx="45" cy="22" r="16" fill="rgba(255,255,255,0.25)"/>
+          <!-- hair -->
+          <path d="M30 18 Q32 8 45 6 Q58 8 60 18" fill="rgba(255,255,255,0.35)"/>
+          <!-- arms -->
+          <path d="M30 65 Q22 72 24 84 Q26 92 30 96" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M60 65 Q68 72 66 84 Q64 92 60 96" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <!-- heart on belly -->
+          <path d="M41 76 Q45 72 49 76 Q53 80 45 86 Q37 80 41 76Z" fill="rgba(255,255,255,0.4)"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h1>Subharathna's Diary</h1>
+        <div class="date-label" id="today-label"></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
         </div>
-        <button class="water-btn" onclick="changeWater(1)">+</button>
+        <div class="progress-label" id="progress-label">0 / 7 meals logged</div>
       </div>
     </div>
 
-    <!-- Meals -->
-    <div id="meals-container"></div>
+    <div class="content">
 
-    <!-- Notes -->
-    <div class="notes-card">
-      <div class="card-title">📝 Today's Note</div>
-      <textarea id="daily-note" placeholder="Symptoms, cravings, how you felt today, doctor advice..." oninput="saveToLocalStorage()"></textarea>
+      <!-- Water -->
+      <div class="card">
+        <div class="card-title">💧 Water Intake</div>
+        <div class="water-track">
+          <div class="water-info">
+            <div>
+              <div class="water-ml" id="water-ml">0 ml</div>
+              <div class="water-target">Target: 3000 ml / day</div>
+            </div>
+            <div style="font-size:12px;color:#aaa;text-align:right">
+              <div id="water-pct" style="font-size:18px;font-weight:800;color:#4a90d9">0%</div>
+              of daily goal
+            </div>
+          </div>
+          <div class="water-goal-bar" style="margin-top:8px;margin-bottom:10px">
+            <div class="walk-goal-fill" id="water-bar" style="width:0%;background:linear-gradient(90deg,#7ec8f5,#4a90d9)"></div>
+          </div>
+          <div class="water-bottles" id="water-bottles"></div>
+          <div class="water-controls-row">
+            <button class="water-ctrl-btn minus" onclick="changeWater(-1)">− 500 ml</button>
+            <button class="water-ctrl-btn plus"  onclick="changeWater(1)">+ 500 ml</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Walk -->
+      <div class="card">
+        <div class="card-title">🚶‍♀️ Walk Time</div>
+        <div class="walk-row">
+          <div class="walk-display">
+            <div class="walk-mins" id="walk-mins">0 min</div>
+            <div class="walk-label">Target: 30 min / day</div>
+          </div>
+          <div class="walk-controls">
+            <button class="walk-btn minus" onclick="changeWalk(-5)">−5</button>
+            <button class="walk-btn plus"  onclick="changeWalk(5)">+5</button>
+          </div>
+        </div>
+        <div class="walk-goal-bar" style="margin-top:10px">
+          <div class="walk-goal-fill" id="walk-bar" style="width:0%"></div>
+        </div>
+        <div style="font-size:11px;color:#aaa;margin-top:5px" id="walk-label-sub">Keep going! 💪</div>
+      </div>
+
+      <!-- Weight (weekly log) -->
+      <div class="weight-card" id="weight-card">
+        <div class="card-title">⚖️ Weekly Weight Log <span id="weight-badge" style="font-size:10px;font-weight:600;color:#9c27b0;margin-left:6px"></span></div>
+        <div class="weight-input-wrap">
+          <input class="weight-input" id="weight-input" type="number" step="0.1" min="40" max="120" placeholder="e.g. 58.5"/>
+          <span class="weight-unit">kg</span>
+          <button class="weight-save-btn" onclick="saveWeight()">Log Weight</button>
+        </div>
+        <div id="weight-last" style="font-size:11px;color:#aaa;margin-top:8px;text-align:center"></div>
+      </div>
+
+      <!-- Meals -->
+      <div id="meals-container"></div>
+
+      <!-- Notes -->
+      <div class="card notes-card">
+        <div class="card-title">📝 Today's Note</div>
+        <textarea id="daily-note" placeholder="Symptoms, cravings, how you felt today..." oninput="saveToLocalStorage()"></textarea>
+      </div>
+
+      <!-- Tips -->
+      <div class="tips-card">
+        <div class="tips-title">💡 6th Month Reminders</div>
+        <div class="tip-item"><span class="tip-dot">•</span> Keep milk to 1–2 glasses/day</div>
+        <div class="tip-item"><span class="tip-dot">•</span> Small frequent meals over large ones</div>
+        <div class="tip-item"><span class="tip-dot">•</span> Avoid biscuits, sweets & refined carbs</div>
+        <div class="tip-item"><span class="tip-dot">•</span> Protein in every meal — paneer, dal, curd</div>
+        <div class="tip-item"><span class="tip-dot">•</span> Watch for puffiness in face, hands, ankles</div>
+      </div>
     </div>
 
-    <!-- Tips -->
-    <div class="tips-card">
-      <div class="tips-title">💡 6th Month Reminders</div>
-      <div class="tip-item"><span class="tip-dot">•</span> Keep milk to 1–2 glasses/day — not more</div>
-      <div class="tip-item"><span class="tip-dot">•</span> Small frequent meals over large ones</div>
-      <div class="tip-item"><span class="tip-dot">•</span> Avoid biscuits, sweets & refined carbs</div>
-      <div class="tip-item"><span class="tip-dot">•</span> Add protein in every meal — paneer, dal, curd</div>
-      <div class="tip-item"><span class="tip-dot">•</span> 30 min gentle walk daily if comfortable</div>
-      <div class="tip-item"><span class="tip-dot">•</span> Watch for puffiness in face, hands, ankles</div>
+    <div class="save-wrap">
+      <button class="save-btn" id="save-btn" onclick="saveToSheet()">Save to Google Sheets</button>
     </div>
-
-    <div style="height:20px"></div>
   </div>
 
-  <div class="save-wrap">
-    <button class="save-btn" id="save-btn" onclick="saveToSheet()">Save to Google Sheets</button>
-    <div class="tagline">Baby is growing beautifully 🤍</div>
+  <!-- ── DASHBOARD SCREEN ── -->
+  <div id="screen-dashboard" class="screen">
+    <div class="dash-header">
+      <h2>📊 Weekly Dashboard</h2>
+      <p id="dash-week-label">This week's overview</p>
+    </div>
+    <div class="content" style="padding-top:0">
+
+      <div class="week-grid" id="week-grid"></div>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-days">0/7</div>
+          <div class="stat-label">Days Logged</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-meals">0</div>
+          <div class="stat-label">Avg Meals/Day</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-water" style="color:#4a90d9">0L</div>
+          <div class="stat-label">Avg Water/Day</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-walk" style="color:#43a047">0m</div>
+          <div class="stat-label">Avg Walk/Day</div>
+        </div>
+      </div>
+
+      <!-- Weight Trend -->
+      <div class="trend-card">
+        <div class="trend-title">⚖️ Weight Trend (weekly)</div>
+        <div class="trend-weeks" id="trend-weeks"><div class="trend-empty">No weight logs yet</div></div>
+      </div>
+
+      <div class="week-detail">
+        <div class="week-detail-title">Meal coverage this week</div>
+        <div id="week-detail-rows"></div>
+      </div>
+
+      <div style="height:20px"></div>
+    </div>
+  </div>
+
+  <!-- ── BOTTOM NAV ── -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-diary" onclick="switchTab('diary')">
+      <span class="nav-icon">📋</span>Today
+    </button>
+    <button class="nav-btn" id="nav-dashboard" onclick="switchTab('dashboard')">
+      <span class="nav-icon">📊</span>Dashboard
+    </button>
   </div>
 </div>
 
 <script>
 const MEAL_SLOTS = [
-  { id: "morning", label: "🌅 Morning (Empty Stomach)", time: "6:00 – 7:00 AM", placeholder: "e.g. Warm water, soaked raisins..." },
-  { id: "breakfast", label: "🍽️ Breakfast", time: "8:00 – 9:00 AM", placeholder: "e.g. Idli 2, sambar, coconut chutney..." },
-  { id: "mid_morning", label: "🥜 Mid-Morning Snack", time: "10:30 – 11:00 AM", placeholder: "e.g. Handful of nuts, 1 banana..." },
-  { id: "lunch", label: "🌿 Lunch", time: "1:00 – 2:00 PM", placeholder: "e.g. Rice, spinach dal, curd, salad..." },
-  { id: "evening", label: "☕ Evening Snack", time: "4:00 – 5:00 PM", placeholder: "e.g. Roasted channa, 1 glass milk..." },
-  { id: "dinner", label: "🌙 Dinner", time: "7:30 – 8:30 PM", placeholder: "e.g. 2 chapathi, paneer sabzi, curd..." },
-  { id: "night", label: "🥛 Night (if anything)", time: "After 9:00 PM", placeholder: "e.g. Warm turmeric milk..." },
+  { id:"morning",    label:"🌅 Morning (Empty Stomach)", time:"6:00–7:00 AM",   placeholder:"e.g. Warm water, soaked raisins..." },
+  { id:"breakfast",  label:"🍽️ Breakfast",              time:"8:00–9:00 AM",   placeholder:"e.g. Idli 2, sambar, coconut chutney..." },
+  { id:"mid_morning",label:"🥜 Mid-Morning Snack",       time:"10:30–11:00 AM", placeholder:"e.g. Handful of nuts, 1 banana..." },
+  { id:"lunch",      label:"🌿 Lunch",                   time:"1:00–2:00 PM",   placeholder:"e.g. Rice, spinach dal, curd, salad..." },
+  { id:"evening",    label:"☕ Evening Snack",            time:"4:00–5:00 PM",   placeholder:"e.g. Roasted channa, 1 glass milk..." },
+  { id:"dinner",     label:"🌙 Dinner",                  time:"7:30–8:30 PM",   placeholder:"e.g. 2 chapathi, paneer sabzi, curd..." },
+  { id:"night",      label:"🥛 Night (if anything)",     time:"After 9:00 PM",  placeholder:"e.g. Warm turmeric milk..." },
 ];
 
-let waterCount = 0;
-let config = {};
+// Water: each unit = 500ml, max 6 units = 3L
+const WATER_UNIT = 500;
+const WATER_MAX  = 6;
+const WALK_TARGET = 30;
 
-function getTodayLabel() {
-  return new Date().toLocaleDateString("en-IN", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric"
-  });
+let waterUnits = 0; // 0–6 (each = 500ml)
+let walkMins   = 0;
+let config     = {};
+
+// Weight stored separately keyed by week start (Monday)
+function getWeekStartKey(date) {
+  const d = date ? new Date(date) : new Date();
+  d.setHours(0,0,0,0);
+  const day = d.getDay();
+  d.setDate(d.getDate() - ((day+6)%7)); // Monday
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
-
-function getTodayRow() {
-  // Use local date (IST), not UTC — avoids date mismatch in India
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(now.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+function saveWeight() {
+  const val = parseFloat(document.getElementById("weight-input").value);
+  if (isNaN(val)||val<30||val>150){ showToast("Enter a valid weight (30–150 kg)","error"); return; }
+  const wk = getWeekStartKey();
+  const log = JSON.parse(localStorage.getItem("weight_log")||"{}");
+  log[wk] = val;
+  localStorage.setItem("weight_log", JSON.stringify(log));
+  showToast(`Weight ${val} kg logged for this week ✓`,"success");
+  updateWeightCard();
 }
-
-// ── Setup ──────────────────────────────────────────────
-function saveSetup() {
-  const sheetId = document.getElementById("sheet-id").value.trim();
-  const clientEmail = document.getElementById("client-email").value.trim();
-  const privateKey = document.getElementById("private-key").value.trim();
-
-  if (!sheetId || !clientEmail || !privateKey) {
-    showToast("Please fill in all three fields", "error"); return;
+function updateWeightCard() {
+  const log  = JSON.parse(localStorage.getItem("weight_log")||"{}");
+  const wk   = getWeekStartKey();
+  const last = log[wk];
+  const badge  = document.getElementById("weight-badge");
+  const lastEl = document.getElementById("weight-last");
+  if (last) {
+    if(badge) badge.textContent = "✓ Logged this week";
+    if(lastEl) lastEl.textContent = `This week: ${last} kg`;
+    const inp = document.getElementById("weight-input");
+    if(inp) inp.value = last;
+  } else {
+    if(badge) badge.textContent = "Not logged yet";
+    if(lastEl) lastEl.textContent = "Log your weight once this week";
   }
+}
 
+// ── DATE HELPERS ──
+function getTodayKey() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;
+}
+function getTodayLabel() {
+  return new Date().toLocaleDateString("en-IN",{ weekday:"long", day:"numeric", month:"long", year:"numeric" });
+}
+function getWeekDates() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const day = today.getDay(); // 0=Sun
+  const mon = new Date(today); mon.setDate(today.getDate() - ((day+6)%7));
+  return Array.from({length:7}, (_,i) => { const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
+}
+function dateToKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+// ── SETUP ──
+function saveSetup() {
+  const sheetId     = document.getElementById("sheet-id").value.trim();
+  const clientEmail = document.getElementById("client-email").value.trim();
+  const privateKey  = document.getElementById("private-key").value.trim();
+  if (!sheetId||!clientEmail||!privateKey){ showToast("Please fill all fields","error"); return; }
   config = { sheetId, clientEmail, privateKey };
   localStorage.setItem("diary_config", JSON.stringify(config));
   initApp();
 }
-
 function loadConfig() {
-  const saved = localStorage.getItem("diary_config");
-  if (saved) { config = JSON.parse(saved); return true; }
-  return false;
+  const s = localStorage.getItem("diary_config");
+  if (s){ config=JSON.parse(s); return true; } return false;
 }
 
-// ── App Init ───────────────────────────────────────────
+// ── TAB SWITCH ──
+function switchTab(tab) {
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById(`screen-${tab}`).classList.add("active");
+  document.getElementById(`nav-${tab}`).classList.add("active");
+  if (tab==="dashboard") buildDashboard();
+}
+
+// ── INIT ──
 async function initApp() {
-  document.getElementById("setup-screen").style.display = "none";
-  document.getElementById("app-screen").style.display = "block";
+  document.getElementById("setup-screen").style.display="none";
+  document.getElementById("app-screen").style.display="block";
   document.getElementById("today-label").textContent = getTodayLabel();
   buildMeals();
-  buildWater();
-
-  // Step 1: Restore instantly from localStorage (no network needed)
-  const restoredLocal = loadFromLocalStorage();
-  if (restoredLocal) showToast("Restored from local cache ✓", "success");
-
-  // Step 2: Sync from Google Sheet in background (overwrites local if sheet has newer data)
+  buildWaterUI();
+  buildWalkUI();
+  updateWeightCard();
+  const ok = loadFromLocalStorage();
+  if (ok) showToast("Restored from local cache ✓","success");
   loadTodayFromSheet();
 }
 
-// ── Load today's data from Sheet on startup ─────────────
-async function loadTodayFromSheet() {
-  try {
-    const token = await getAccessToken();
-    const today = getTodayRow();
-
-    const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A:A`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    if (!res.ok) return;
-    const data = await res.json();
-    const rows = data.values || [];
-    const rowIndex = rows.findIndex(r => r[0] && r[0].trim() === today.trim());
-    if (rowIndex === -1) return;
-
-    // Fetch the full row
-    const actualRow = rowIndex + 1;
-    const rowRes = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A${actualRow}:Z${actualRow}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    if (!rowRes.ok) return;
-    const rowData = await rowRes.json();
-    const rowValues = (rowData.values || [[]])[0];
-    if (!rowValues || rowValues.length < 3) return;
-
-    // rowValues: [date, day, food0, qty0, food1, qty1, ... x7 meals, water, note]
-    // Meals start at index 2, 2 cols each
-    MEAL_SLOTS.forEach((slot, i) => {
-      const foodVal = rowValues[2 + i * 2] || "";
-      const qtyVal  = rowValues[3 + i * 2] || "";
-      const foodEl = document.getElementById(`food-${slot.id}`);
-      const qtyEl  = document.getElementById(`qty-${slot.id}`);
-      if (foodEl) foodEl.value = foodVal;
-      if (qtyEl)  qtyEl.value = qtyVal;
-      if (foodVal) onMealInput(slot.id);
-    });
-
-    // Water is at index 2 + 7*2 = 16
-    const waterVal = parseInt(rowValues[16] || "0");
-    if (!isNaN(waterVal)) { waterCount = waterVal; buildWater(); }
-
-    // Note is at index 17
-    const noteEl = document.getElementById("daily-note");
-    if (noteEl) noteEl.value = rowValues[17] || "";
-
-    saveToLocalStorage(); // keep localStorage in sync with sheet
-    showToast("Synced from Google Sheets ✓", "success");
-  } catch (e) {
-    console.warn("Could not load today's data from sheet:", e);
-  }
-}
-
+// ── BUILD MEALS ──
 function buildMeals() {
-  const container = document.getElementById("meals-container");
-  container.innerHTML = "";
+  const c = document.getElementById("meals-container"); c.innerHTML="";
   MEAL_SLOTS.forEach(slot => {
-    const card = document.createElement("div");
-    card.className = "meal-card";
-    card.id = `card-${slot.id}`;
-    card.innerHTML = `
+    const d = document.createElement("div");
+    d.className="meal-card"; d.id=`card-${slot.id}`;
+    d.innerHTML=`
       <div class="meal-header">
-        <div>
-          <div class="meal-title">${slot.label}</div>
-          <div class="meal-time">${slot.time}</div>
-        </div>
+        <div><div class="meal-title">${slot.label}</div><div class="meal-time">${slot.time}</div></div>
         <span class="logged-badge" id="badge-${slot.id}" style="display:none">✓ Logged</span>
       </div>
-      <input class="meal-input" id="food-${slot.id}" placeholder="${slot.placeholder}" oninput="onMealInput('${slot.id}')" />
-      <input class="meal-input" id="qty-${slot.id}" placeholder="Quantity / portion (e.g. 1 cup, 2 nos)" style="margin-bottom:0" oninput="onMealInput('${slot.id}')" />
-    `;
-    container.appendChild(card);
+      <input class="meal-input" id="food-${slot.id}" placeholder="${slot.placeholder}" oninput="onMealInput('${slot.id}')"/>
+      <input class="meal-input" id="qty-${slot.id}" placeholder="Quantity / portion (e.g. 1 cup, 2 nos)" style="margin-bottom:0" oninput="onMealInput('${slot.id}')"/>`;
+    c.appendChild(d);
   });
 }
 
-function buildWater() {
-  const dotsEl = document.getElementById("water-dots");
-  dotsEl.innerHTML = "";
-  for (let i = 0; i < 8; i++) {
-    const dot = document.createElement("div");
-    dot.className = "water-dot" + (i < waterCount ? " filled" : "");
-    dot.id = `dot-${i}`;
-    dotsEl.appendChild(dot);
+// ── WATER ──
+function buildWaterUI() {
+  const el = document.getElementById("water-bottles"); el.innerHTML="";
+  for (let i=0;i<WATER_MAX;i++){
+    const b=document.createElement("div");
+    b.className="water-bottle"+(i<waterUnits?" filled":"");
+    b.innerHTML='<div class="fill"></div><div class="half-mark"></div>';
+    b.onclick=()=>{ waterUnits=i<waterUnits?i:i+1; updateWaterUI(); saveToLocalStorage(); };
+    el.appendChild(b);
   }
-  document.getElementById("water-label").textContent = `${waterCount} glasses · Target: 8–10/day`;
+  updateWaterUI();
 }
-
+function updateWaterUI() {
+  const ml = waterUnits*WATER_UNIT;
+  const pct = Math.min(100,Math.round(ml/3000*100));
+  document.getElementById("water-ml").textContent = ml>=1000?`${ml/1000}L`:`${ml} ml`;
+  document.getElementById("water-pct").textContent = pct+"%";
+  document.getElementById("water-bar").style.width = pct+"%";
+  document.querySelectorAll(".water-bottle").forEach((b,i)=>{
+    b.classList.toggle("filled",i<waterUnits);
+  });
+}
 function changeWater(delta) {
-  waterCount = Math.max(0, Math.min(12, waterCount + delta));
-  buildWater();
-  saveToLocalStorage();
+  waterUnits = Math.max(0,Math.min(WATER_MAX,waterUnits+delta));
+  updateWaterUI(); saveToLocalStorage();
 }
 
+// ── WALK ──
+function buildWalkUI() { updateWalkUI(); }
+function updateWalkUI() {
+  const pct = Math.min(100,Math.round(walkMins/WALK_TARGET*100));
+  document.getElementById("walk-mins").textContent = walkMins+" min";
+  document.getElementById("walk-bar").style.width = pct+"%";
+  const sub = walkMins===0?"Let's get moving today! 🌸"
+    : walkMins<WALK_TARGET?`${WALK_TARGET-walkMins} min more to reach goal 💪`
+    : "Goal achieved! Amazing! 🌟";
+  document.getElementById("walk-label-sub").textContent = sub;
+}
+function changeWalk(delta) {
+  walkMins = Math.max(0,Math.min(120,walkMins+delta));
+  updateWalkUI(); saveToLocalStorage();
+}
+
+// ── MEAL INPUT ──
 function onMealInput(id) {
   const food = document.getElementById(`food-${id}`).value.trim();
-  const card = document.getElementById(`card-${id}`);
-  const badge = document.getElementById(`badge-${id}`);
-  if (food) {
-    card.classList.add("filled");
-    badge.style.display = "inline-block";
-  } else {
-    card.classList.remove("filled");
-    badge.style.display = "none";
-  }
-  updateProgress();
-  saveToLocalStorage();
+  document.getElementById(`card-${id}`).classList.toggle("filled",!!food);
+  document.getElementById(`badge-${id}`).style.display = food?"inline-block":"none";
+  updateProgress(); saveToLocalStorage();
+}
+function onMealInputSilent(id) {
+  const food = document.getElementById(`food-${id}`)?.value.trim();
+  document.getElementById(`card-${id}`)?.classList.toggle("filled",!!food);
+  const b=document.getElementById(`badge-${id}`); if(b) b.style.display=food?"inline-block":"none";
+}
+function updateProgress() {
+  const filled = MEAL_SLOTS.filter(s=>document.getElementById(`food-${s.id}`)?.value?.trim()).length;
+  document.getElementById("progress-fill").style.width=(filled/MEAL_SLOTS.length*100)+"%";
+  document.getElementById("progress-label").textContent=`${filled} / ${MEAL_SLOTS.length} meals logged`;
 }
 
+// ── LOCAL STORAGE ──
 function saveToLocalStorage() {
-  const today = getTodayRow();
-  const data = { water: waterCount, note: document.getElementById("daily-note").value };
-  MEAL_SLOTS.forEach(slot => {
-    data[`food_${slot.id}`] = document.getElementById(`food-${slot.id}`)?.value || "";
-    data[`qty_${slot.id}`]  = document.getElementById(`qty-${slot.id}`)?.value  || "";
+  const today = getTodayKey();
+  const data = { water:waterUnits, walk:walkMins, note:document.getElementById("daily-note").value };
+  MEAL_SLOTS.forEach(s=>{
+    data[`food_${s.id}`]=document.getElementById(`food-${s.id}`)?.value||"";
+    data[`qty_${s.id}`] =document.getElementById(`qty-${s.id}`)?.value||"";
   });
   localStorage.setItem(`diary_${today}`, JSON.stringify(data));
 }
-
-function loadFromLocalStorage() {
-  const today = getTodayRow();
-  const raw = localStorage.getItem(`diary_${today}`);
+function loadFromLocalStorage(dateKey) {
+  const key = dateKey||getTodayKey();
+  const raw = localStorage.getItem(`diary_${key}`);
   if (!raw) return false;
   try {
-    const data = JSON.parse(raw);
-    MEAL_SLOTS.forEach(slot => {
-      const foodEl = document.getElementById(`food-${slot.id}`);
-      const qtyEl  = document.getElementById(`qty-${slot.id}`);
-      if (foodEl) foodEl.value = data[`food_${slot.id}`] || "";
-      if (qtyEl)  qtyEl.value  = data[`qty_${slot.id}`]  || "";
-      if (data[`food_${slot.id}`]) onMealInputSilent(slot.id);
-    });
-    const noteEl = document.getElementById("daily-note");
-    if (noteEl) noteEl.value = data.note || "";
-    if (!isNaN(parseInt(data.water))) {
-      waterCount = parseInt(data.water);
-      buildWater();
+    const d=JSON.parse(raw);
+    if (!dateKey) {
+      MEAL_SLOTS.forEach(s=>{
+        const f=document.getElementById(`food-${s.id}`); if(f) f.value=d[`food_${s.id}`]||"";
+        const q=document.getElementById(`qty-${s.id}`);  if(q) q.value=d[`qty_${s.id}`]||"";
+        if(d[`food_${s.id}`]) onMealInputSilent(s.id);
+      });
+      const n=document.getElementById("daily-note"); if(n) n.value=d.note||"";
+      waterUnits=parseInt(d.water||0); updateWaterUI();
+      walkMins=parseInt(d.walk||0); updateWalkUI();
+      updateProgress();
     }
-    updateProgress();
-    return true;
-  } catch(e) { return false; }
+    return d;
+  } catch(e){ return false; }
 }
 
-// Silent version — updates card state without re-saving to localStorage (avoids loop)
-function onMealInputSilent(id) {
-  const food = document.getElementById(`food-${id}`)?.value.trim();
-  const card = document.getElementById(`card-${id}`);
-  const badge = document.getElementById(`badge-${id}`);
-  if (!card || !badge) return;
-  if (food) {
-    card.classList.add("filled");
-    badge.style.display = "inline-block";
-  } else {
-    card.classList.remove("filled");
-    badge.style.display = "none";
-  }
-}
-
-function updateProgress() {
-  const filled = MEAL_SLOTS.filter(s => document.getElementById(`food-${s.id}`)?.value?.trim()).length;
-  const pct = (filled / MEAL_SLOTS.length) * 100;
-  document.getElementById("progress-fill").style.width = pct + "%";
-  document.getElementById("progress-label").textContent = `${filled} / ${MEAL_SLOTS.length} meals logged`;
-}
-
-// ── Google Sheets JWT Auth ─────────────────────────────
+// ── GOOGLE AUTH ──
 async function getAccessToken() {
-  const now = Math.floor(Date.now() / 1000);
-  const header = { alg: "RS256", typ: "JWT" };
-  const payload = {
-    iss: config.clientEmail,
-    scope: "https://www.googleapis.com/auth/spreadsheets",
-    aud: "https://oauth2.googleapis.com/token",
-    exp: now + 3600,
-    iat: now
-  };
-
-  const encode = obj => btoa(JSON.stringify(obj)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const now = Math.floor(Date.now()/1000);
+  const header  = {alg:"RS256",typ:"JWT"};
+  const payload = { iss:config.clientEmail, scope:"https://www.googleapis.com/auth/spreadsheets", aud:"https://oauth2.googleapis.com/token", exp:now+3600, iat:now };
+  const encode  = o=>btoa(JSON.stringify(o)).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_");
   const signingInput = `${encode(header)}.${encode(payload)}`;
-
-  // Import private key — handle both literal \n and real newlines
-  let rawKey = config.privateKey;
-  rawKey = rawKey.replace(/\\n/g, "\n"); // convert escaped \n to real newlines
-  const pemKey = rawKey
-    .replace(/-----BEGIN PRIVATE KEY-----/g, "")
-    .replace(/-----END PRIVATE KEY-----/g, "")
-    .replace(/\s+/g, ""); // strip all whitespace/newlines
-  const binaryKey = Uint8Array.from(atob(pemKey), c => c.charCodeAt(0));
-  const cryptoKey = await crypto.subtle.importKey(
-    "pkcs8", binaryKey.buffer,
-    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-    false, ["sign"]
-  );
-
-  const signature = await crypto.subtle.sign(
-    "RSASSA-PKCS1-v1_5", cryptoKey,
-    new TextEncoder().encode(signingInput)
-  );
-
-  const sig = btoa(String.fromCharCode(...new Uint8Array(signature)))
-    .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-
+  let rawKey = config.privateKey.replace(/\\n/g,"\n");
+  const pemKey = rawKey.replace(/-----BEGIN PRIVATE KEY-----/g,"").replace(/-----END PRIVATE KEY-----/g,"").replace(/\s+/g,"");
+  const binaryKey = Uint8Array.from(atob(pemKey),c=>c.charCodeAt(0));
+  const cryptoKey = await crypto.subtle.importKey("pkcs8",binaryKey.buffer,{name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"},false,["sign"]);
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5",cryptoKey,new TextEncoder().encode(signingInput));
+  const sig = btoa(String.fromCharCode(...new Uint8Array(signature))).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_");
   const jwt = `${signingInput}.${sig}`;
-
-  const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
-  });
-
+  const res = await fetch("https://oauth2.googleapis.com/token",{ method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"}, body:`grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}` });
   const data = await res.json();
-  if (!data.access_token) throw new Error("Auth failed: " + JSON.stringify(data));
+  if (!data.access_token) throw new Error("Auth failed: "+JSON.stringify(data));
   return data.access_token;
 }
 
-// ── Save to Sheet ──────────────────────────────────────
-async function saveToSheet() {
-  const btn = document.getElementById("save-btn");
-  btn.textContent = "Saving...";
-  btn.classList.add("loading");
+// ── ROW BUILDER ──
+function buildRowValues(dateKey, dayName, overrides) {
+  const d = overrides||{};
+  const get = id => d[id]!==undefined?d[id]:(document.getElementById(id)?.value||"");
+  const vals = [dateKey, dayName];
+  MEAL_SLOTS.forEach(s=>{ vals.push(get(`food-${s.id}`)); vals.push(get(`qty-${s.id}`)); });
+  vals.push(String(overrides?overrides.water:waterUnits));
+  vals.push(String(overrides?overrides.walk:walkMins));
+  vals.push(get("daily-note"));
+  // Weight: read from weekly log (index 19)
+  const wkKey = getWeekStartKey();
+  const wlog  = JSON.parse(localStorage.getItem("weight_log")||"{}");
+  vals.push(String(wlog[wkKey]||""));
+  return vals;
+}
 
-  try {
-    const token = await getAccessToken();
-    const today = getTodayRow();
-    const dayName = new Date().toLocaleDateString("en-IN", { weekday: "long" });
-    const note = document.getElementById("daily-note").value.trim();
+// ── FIND ROW IN SHEET ──
+async function findRowIndex(token, dateKey) {
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A:A`,{ headers:{Authorization:`Bearer ${token}`} });
+  if (!res.ok) throw new Error("Sheet read failed");
+  const data = await res.json();
+  const rows = data.values||[];
+  console.log("Looking for:",dateKey,"in",rows.map(r=>r[0]));
+  return rows.findIndex(r=>r[0]&&r[0].trim()===dateKey.trim());
+}
 
-    const rowValues = [today, dayName];
-    MEAL_SLOTS.forEach(slot => {
-      rowValues.push(document.getElementById(`food-${slot.id}`).value.trim());
-      rowValues.push(document.getElementById(`qty-${slot.id}`).value.trim());
-    });
-    rowValues.push(waterCount.toString());
-    rowValues.push(note);
-
-    // Calculate last column letter (A=1, B=2 ... R=18)
-    const lastCol = String.fromCharCode(64 + rowValues.length);
-
-    // Fetch ALL data in column A to find today's date row
-    const sheetRes = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A:A`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    if (!sheetRes.ok) throw new Error("Failed to read sheet: " + await sheetRes.text());
-    const sheetData = await sheetRes.json();
-    const rows = sheetData.values || [];
-
-    // Find row index (0-based) where column A matches today's date string
-    // Log all found dates for debugging
-    console.log("Today (local):", today);
-    console.log("Sheet column A values:", rows.map(r => r[0]));
-    const rowIndex = rows.findIndex(r => r[0] && r[0].trim() === today.trim());
-    console.log("Matched row index:", rowIndex);
-
-    if (rowIndex === -1) {
-      // No row for today — append a brand new row
-      const appendUrl = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A1:${lastCol}1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
-      const appendRes = await fetch(appendUrl, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ values: [rowValues] })
-      });
-      if (!appendRes.ok) throw new Error("Append failed: " + await appendRes.text());
-    } else {
-      // Row exists — overwrite entire row with updated values
-      const actualRow = rowIndex + 1; // Sheets API is 1-indexed
-      const range = `A${actualRow}:${lastCol}${actualRow}`;
-      const updateRes = await fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}?valueInputOption=RAW`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ range, values: [rowValues] })
-        }
-      );
-      if (!updateRes.ok) throw new Error("Update failed: " + await updateRes.text());
-    }
-
-    btn.textContent = "✓ Saved to Google Sheets!";
-    btn.classList.remove("loading");
-    btn.classList.add("success");
-    showToast("Saved successfully! 🎉", "success");
-    setTimeout(() => {
-      btn.textContent = "Save to Google Sheets";
-      btn.classList.remove("success");
-    }, 3000);
-
-  } catch (err) {
-    btn.textContent = "Save to Google Sheets";
-    btn.classList.remove("loading");
-    showToast("❌ " + err.message, "error");
-    console.error("saveToSheet error:", err);
+// ── WRITE ROW ──
+async function writeRow(token, rowValues, rowIndex) {
+  const lastCol = String.fromCharCode(64+rowValues.length);
+  if (rowIndex===-1) {
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A1:${lastCol}1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+    const r=await fetch(url,{ method:"POST", headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json"}, body:JSON.stringify({values:[rowValues]}) });
+    if (!r.ok) throw new Error("Append failed: "+await r.text());
+  } else {
+    const actualRow=rowIndex+1;
+    const range=`A${actualRow}:${lastCol}${actualRow}`;
+    const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}?valueInputOption=RAW`,{ method:"PUT", headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json"}, body:JSON.stringify({range,values:[rowValues]}) });
+    if (!r.ok) throw new Error("Update failed: "+await r.text());
   }
 }
 
-// ── Toast ──────────────────────────────────────────────
-function showToast(msg, type = "") {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast show" + (type === "error" ? " error" : type === "success" ? " success-toast" : "");
-  setTimeout(() => { t.className = "toast"; }, 3000);
+// ── LOAD TODAY FROM SHEET ──
+async function loadTodayFromSheet() {
+  try {
+    const token = await getAccessToken();
+    const today = getTodayKey();
+    const rowIndex = await findRowIndex(token, today);
+    if (rowIndex===-1) return;
+    const actualRow=rowIndex+1;
+    const rowRes=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A${actualRow}:Z${actualRow}`,{headers:{Authorization:`Bearer ${token}`}});
+    if (!rowRes.ok) return;
+    const rowData=await rowRes.json();
+    const rv=(rowData.values||[[]])[0];
+    if (!rv||rv.length<3) return;
+    MEAL_SLOTS.forEach((s,i)=>{
+      const f=document.getElementById(`food-${s.id}`); if(f) f.value=rv[2+i*2]||"";
+      const q=document.getElementById(`qty-${s.id}`);  if(q) q.value=rv[3+i*2]||"";
+      if(rv[2+i*2]) onMealInputSilent(s.id);
+    });
+    waterUnits=parseInt(rv[16]||0); updateWaterUI();
+    walkMins  =parseInt(rv[17]||0); updateWalkUI();
+    const n=document.getElementById("daily-note"); if(n) n.value=rv[18]||"";
+    // Weight from sheet (col 19) — store in weekly log
+    if (rv[19]&&parseFloat(rv[19])) {
+      const wlog=JSON.parse(localStorage.getItem("weight_log")||"{}");
+      wlog[getWeekStartKey()]=parseFloat(rv[19]);
+      localStorage.setItem("weight_log",JSON.stringify(wlog));
+      updateWeightCard();
+    }
+    updateProgress();
+    saveToLocalStorage();
+    showToast("Synced from Google Sheets ✓","success");
+  } catch(e){ console.warn("Sheet load error:",e); }
 }
 
-// ── Boot ───────────────────────────────────────────────
-if (loadConfig()) {
-  initApp();
+// ── SAVE TO SHEET ──
+async function saveToSheet() {
+  const btn=document.getElementById("save-btn");
+  btn.textContent="Saving..."; btn.classList.add("loading");
+  try {
+    const token  = await getAccessToken();
+    const today  = getTodayKey();
+    const dayName= new Date().toLocaleDateString("en-IN",{weekday:"long"});
+    const rowValues = buildRowValues(today,dayName);
+    const rowIndex  = await findRowIndex(token,today);
+    await writeRow(token,rowValues,rowIndex);
+    saveToLocalStorage();
+    btn.textContent="✓ Saved!"; btn.classList.remove("loading"); btn.classList.add("success");
+    showToast("Saved to Google Sheets 🎉","success");
+    setTimeout(()=>{ btn.textContent="Save to Google Sheets"; btn.classList.remove("success"); },3000);
+  } catch(err){
+    btn.textContent="Save to Google Sheets"; btn.classList.remove("loading");
+    showToast("❌ "+err.message,"error"); console.error(err);
+  }
 }
+
+// ── DASHBOARD ──
+async function buildDashboard() {
+  const weekDates = getWeekDates();
+  const todayKey  = getTodayKey();
+
+  // Load week data from localStorage first
+  const weekData = weekDates.map(d=>({ date:d, key:dateToKey(d), data:loadFromLocalStorage(dateToKey(d)) }));
+
+  // Week grid
+  const grid = document.getElementById("week-grid"); grid.innerHTML="";
+  const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  weekData.forEach((w,i)=>{
+    const logged = w.data && MEAL_SLOTS.some(s=>w.data[`food_${s.id}`]);
+    const isToday = w.key===todayKey;
+    const div=document.createElement("div");
+    div.className="week-day"+(logged?" logged":"")+(isToday?" today":"");
+    div.innerHTML=`<div class="day-name">${days[i]}</div><div class="day-num">${w.date.getDate()}</div><div class="day-dot"></div>`;
+    grid.appendChild(div);
+  });
+
+  // Stats
+  const loggedDays = weekData.filter(w=>w.data&&MEAL_SLOTS.some(s=>w.data[`food_${s.id}`]));
+  const avgMeals   = loggedDays.length?Math.round(loggedDays.reduce((a,w)=>a+MEAL_SLOTS.filter(s=>w.data[`food_${s.id}`]).length,0)/loggedDays.length):0;
+  const avgWater   = loggedDays.length?Math.round(loggedDays.reduce((a,w)=>a+parseInt(w.data?.water||0),0)/loggedDays.length*WATER_UNIT/1000*10)/10:0;
+  const avgWalk    = loggedDays.length?Math.round(loggedDays.reduce((a,w)=>a+parseInt(w.data?.walk||0),0)/loggedDays.length):0;
+  document.getElementById("stat-days").textContent  = `${loggedDays.length}/7`;
+  document.getElementById("stat-meals").textContent = avgMeals;
+  document.getElementById("stat-water").textContent = avgWater+"L";
+  document.getElementById("stat-walk").textContent  = avgWalk+"m";
+
+  // Detail rows
+  const detail=document.getElementById("week-detail-rows"); detail.innerHTML="";
+  weekData.forEach((w,i)=>{
+    const d=w.data;
+    const row=document.createElement("div"); row.className="day-row";
+    const pips=MEAL_SLOTS.map(s=>`<div class="meal-pip${d&&d[`food_${s.id}`]?" done":""}"></div>`).join("");
+    const waterL=d?Math.round(parseInt(d.water||0)*WATER_UNIT/100)/10:0;
+    const walk=d?parseInt(d.walk||0):0;
+    row.innerHTML=`<div class="day-row-name">${days[i]}</div><div class="day-row-bars">${pips}</div><div class="day-row-stats"><div class="day-stat">💧${waterL}L</div><div class="day-stat">🚶${walk}m</div></div>`;
+    detail.appendChild(row);
+  });
+
+  buildWeightTrend();
+
+  // Also try fetching from sheet in background
+  try {
+    const token = await getAccessToken();
+    for (const w of weekData) {
+      const idx=await findRowIndex(token,w.key);
+      if (idx===-1) continue;
+      const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A${idx+1}:Z${idx+1}`,{headers:{Authorization:`Bearer ${token}`}});
+      if (!r.ok) continue;
+      const rd=await r.json(); const rv=(rd.values||[[]])[0];
+      if (!rv||rv.length<3) continue;
+      // Cache to localStorage
+      const cache={}; 
+      MEAL_SLOTS.forEach((s,mi)=>{ cache[`food_${s.id}`]=rv[2+mi*2]||""; cache[`qty_${s.id}`]=rv[3+mi*2]||""; });
+      cache.water=rv[16]||"0"; cache.walk=rv[17]||"0"; cache.note=rv[18]||"";
+      if(rv[19]) { const wlog=JSON.parse(localStorage.getItem("weight_log")||"{}"); wlog[getWeekStartKey(w.date)]=parseFloat(rv[19]); localStorage.setItem("weight_log",JSON.stringify(wlog)); }
+      localStorage.setItem(`diary_${w.key}`,JSON.stringify(cache));
+    }
+    buildDashboard(); // re-render with fresh data
+  } catch(e){ console.warn("Dashboard sheet sync:",e); }
+}
+
+// ── WEIGHT TREND ──
+function buildWeightTrend() {
+  const log = JSON.parse(localStorage.getItem("weight_log")||"{}");
+  const keys = Object.keys(log).sort();
+  const el = document.getElementById("trend-weeks");
+  if (!el) return;
+  if (keys.length===0){ el.innerHTML='<div class="trend-empty">No weight logs yet — log your weight in the diary tab once a week</div>'; return; }
+  // Show last 8 weeks max
+  const recent = keys.slice(-8);
+  const maxW = Math.max(...recent.map(k=>log[k]));
+  const minW = Math.min(...recent.map(k=>log[k]));
+  el.innerHTML="";
+  recent.forEach((wk,i)=>{
+    const wDate = new Date(wk);
+    const label = wDate.toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+    const w = log[wk];
+    const prev = i>0?log[recent[i-1]]:null;
+    const diff = prev!==null?Math.round((w-prev)*10)/10:null;
+    const pct = maxW===minW?80:Math.round(40+(w-minW)/(maxW-minW)*55);
+    const diffClass = diff===null?"same":diff>0?"up":diff<0?"down":"same";
+    const diffText = diff===null?"—":diff>0?`+${diff} kg`:diff<0?`${diff} kg`:"same";
+    const isThis = wk===getWeekStartKey();
+    const row=document.createElement("div"); row.className="trend-week-row";
+    row.innerHTML=`
+      <div class="trend-week-label">${label}${isThis?' <span style="color:#e8735a;font-weight:800">●</span>':""}</div>
+      <div class="trend-week-weight">${w}<span style="font-size:10px;color:#aaa"> kg</span></div>
+      <div class="trend-bar-wrap"><div class="trend-bar-fill" style="width:${pct}%"></div></div>
+      <div class="trend-diff ${diffClass}">${diffText}</div>`;
+    el.appendChild(row);
+  });
+  // Summary
+  if (recent.length>=2){
+    const first=log[recent[0]], last=log[recent[recent.length-1]];
+    const total=Math.round((last-first)*10)/10;
+    const sumDiv=document.createElement("div");
+    sumDiv.style.cssText="font-size:12px;color:#aaa;text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid #f5f0ec";
+    sumDiv.textContent=`Total change over ${recent.length} weeks: ${total>0?"+":""}${total} kg`;
+    el.appendChild(sumDiv);
+  }
+}
+
+// ── TOAST ──
+function showToast(msg,type="") {
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.className="toast show"+(type==="error"?" error":type==="success"?" success-toast":"");
+  setTimeout(()=>{ t.className="toast"; },3000);
+}
+
+// ── BOOT ──
+if (loadConfig()) initApp();
 </script>
 </body>
 </html>
