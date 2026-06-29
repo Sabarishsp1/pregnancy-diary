@@ -479,6 +479,9 @@ async function initApp() {
   document.getElementById("today-label").textContent = getTodayLabel();
   buildMeals();
   buildWaterUI();
+  // Restore walk from dedicated key before building UI
+  const savedWalkToday = localStorage.getItem("walk_"+getTodayKey());
+  if (savedWalkToday !== null) walkMins = parseInt(savedWalkToday);
   buildWalkUI();
   updateWeightCard();
   const ok = loadFromLocalStorage();
@@ -543,7 +546,9 @@ function updateWalkUI() {
 }
 function changeWalk(delta) {
   walkMins = Math.max(0,Math.min(120,walkMins+delta));
-  updateWalkUI(); saveToLocalStorage();
+  updateWalkUI();
+  saveToLocalStorage();
+  localStorage.setItem("walk_"+getTodayKey(), String(walkMins));
 }
 
 // ── MEAL INPUT ──
@@ -573,6 +578,7 @@ function saveToLocalStorage() {
     data[`qty_${s.id}`] =document.getElementById(`qty-${s.id}`)?.value||"";
   });
   localStorage.setItem(`diary_${today}`, JSON.stringify(data));
+  localStorage.setItem("walk_"+today, String(walkMins));
 }
 function loadFromLocalStorage(dateKey) {
   const key = dateKey||getTodayKey();
@@ -588,7 +594,9 @@ function loadFromLocalStorage(dateKey) {
       });
       const n=document.getElementById("daily-note"); if(n) n.value=d.note||"";
       waterUnits=parseInt(d.water||0); updateWaterUI();
-      walkMins=parseInt(d.walk||0); updateWalkUI();
+      const savedWalk = localStorage.getItem("walk_"+key);
+    walkMins = parseInt(savedWalk !== null ? savedWalk : (d.walk||0));
+    updateWalkUI();
       updateProgress();
     }
     return d;
