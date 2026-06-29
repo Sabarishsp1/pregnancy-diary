@@ -6,14 +6,14 @@
 <title>Subharathna's Food Diary</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: #fdf7f4;
     min-height: 100vh;
     padding-bottom: 100px;
   }
- 
+
   /* SETUP SCREEN */
   #setup-screen {
     min-height: 100vh;
@@ -24,7 +24,7 @@
     padding: 24px;
     background: linear-gradient(160deg, #fdf7f4 0%, #fceee8 100%);
   }
- 
+
   #setup-screen h1 {
     font-size: 22px;
     font-weight: 800;
@@ -32,7 +32,7 @@
     margin-bottom: 6px;
     text-align: center;
   }
- 
+
   #setup-screen p {
     font-size: 13px;
     color: #a07060;
@@ -40,7 +40,7 @@
     margin-bottom: 28px;
     line-height: 1.6;
   }
- 
+
   .setup-card {
     background: white;
     border-radius: 20px;
@@ -49,7 +49,7 @@
     max-width: 420px;
     box-shadow: 0 4px 24px rgba(200,100,70,0.12);
   }
- 
+
   .setup-card label {
     display: block;
     font-size: 12px;
@@ -59,7 +59,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
- 
+
   .setup-card input, .setup-card textarea {
     width: 100%;
     border: 1.5px solid #ece0d8;
@@ -72,18 +72,18 @@
     margin-bottom: 16px;
     font-family: inherit;
   }
- 
+
   .setup-card textarea {
     height: 90px;
     resize: none;
     font-size: 11px;
     font-family: monospace;
   }
- 
+
   .setup-card input:focus, .setup-card textarea:focus {
     border-color: #e8735a;
   }
- 
+
   .btn-primary {
     width: 100%;
     background: linear-gradient(135deg, #e8735a, #c9563e);
@@ -97,9 +97,9 @@
     box-shadow: 0 4px 16px rgba(201,86,62,0.3);
     transition: opacity 0.2s;
   }
- 
+
   .btn-primary:active { opacity: 0.85; }
- 
+
   .warning-box {
     background: #fff8e1;
     border: 1.5px solid #ffe082;
@@ -110,10 +110,10 @@
     margin-bottom: 20px;
     line-height: 1.6;
   }
- 
+
   /* MAIN APP */
   #app-screen { display: none; }
- 
+
   .header {
     background: linear-gradient(135deg, #e8735a 0%, #c9563e 100%);
     color: white;
@@ -125,11 +125,11 @@
     top: 0;
     z-index: 10;
   }
- 
+
   .header-emoji { font-size: 26px; margin-bottom: 4px; }
   .header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
   .header .date { font-size: 12px; opacity: 0.85; margin-top: 3px; }
- 
+
   .progress-bar-wrap {
     background: rgba(255,255,255,0.2);
     border-radius: 20px;
@@ -137,22 +137,22 @@
     margin: 12px 20px 0;
     overflow: hidden;
   }
- 
+
   .progress-bar-fill {
     height: 100%;
     background: white;
     border-radius: 20px;
     transition: width 0.4s ease;
   }
- 
+
   .progress-label {
     font-size: 11px;
     opacity: 0.85;
     margin-top: 5px;
   }
- 
+
   .content { padding: 16px; max-width: 520px; margin: 0 auto; }
- 
+
   /* WATER */
   .water-card {
     background: white;
@@ -161,20 +161,20 @@
     margin-bottom: 14px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   }
- 
+
   .card-title {
     font-size: 13px;
     font-weight: 700;
     color: #7a4a3a;
     margin-bottom: 10px;
   }
- 
+
   .water-controls {
     display: flex;
     align-items: center;
     gap: 12px;
   }
- 
+
   .water-btn {
     width: 34px; height: 34px;
     border-radius: 50%;
@@ -187,29 +187,29 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
- 
+
   .water-dots {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
     flex: 1;
   }
- 
+
   .water-dot {
     width: 26px; height: 26px;
     border-radius: 8px;
     background: #f0f0f0;
     transition: background 0.2s;
   }
- 
+
   .water-dot.filled { background: #e8735a; }
- 
+
   .water-label {
     font-size: 11px;
     color: #aaa;
     margin-top: 6px;
   }
- 
+
   /* MEAL CARDS */
   .meal-card {
     background: white;
@@ -220,19 +220,19 @@
     border-left: 4px solid #f0ebe6;
     transition: border-color 0.3s;
   }
- 
+
   .meal-card.filled { border-left-color: #e8735a; }
- 
+
   .meal-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 12px;
   }
- 
+
   .meal-title { font-size: 14px; font-weight: 700; color: #2d1a12; }
   .meal-time { font-size: 11px; color: #bbb; margin-top: 2px; }
- 
+
   .logged-badge {
     background: #e8f5e9;
     color: #388e3c;
@@ -242,7 +242,7 @@
     font-weight: 600;
     flex-shrink: 0;
   }
- 
+
   .meal-input {
     width: 100%;
     border: 1.5px solid #ece6e1;
@@ -255,10 +255,10 @@
     margin-bottom: 8px;
     font-family: inherit;
   }
- 
+
   .meal-input:focus { border-color: #e8735a; }
   .meal-input::placeholder { color: #ccc; }
- 
+
   /* NOTES */
   .notes-card {
     background: white;
@@ -267,7 +267,7 @@
     margin-bottom: 14px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   }
- 
+
   .notes-card textarea {
     width: 100%;
     border: 1.5px solid #ece6e1;
@@ -281,9 +281,9 @@
     font-family: inherit;
     height: 80px;
   }
- 
+
   .notes-card textarea:focus { border-color: #e8735a; }
- 
+
   /* TIPS */
   .tips-card {
     background: linear-gradient(135deg, #fff8f6, #fef3ef);
@@ -292,9 +292,9 @@
     padding: 16px 18px;
     margin-bottom: 14px;
   }
- 
+
   .tips-title { font-size: 13px; font-weight: 700; color: #c9563e; margin-bottom: 8px; }
- 
+
   .tip-item {
     font-size: 12px;
     color: #7a4a3a;
@@ -303,9 +303,9 @@
     gap: 8px;
     line-height: 1.5;
   }
- 
+
   .tip-dot { color: #e8735a; font-weight: 700; flex-shrink: 0; }
- 
+
   /* SAVE BUTTON */
   .save-wrap {
     position: fixed;
@@ -314,7 +314,7 @@
     background: linear-gradient(to top, #fdf7f4 70%, transparent);
     z-index: 20;
   }
- 
+
   .save-btn {
     width: 100%;
     max-width: 520px;
@@ -331,14 +331,14 @@
     box-shadow: 0 4px 16px rgba(201,86,62,0.35);
     transition: all 0.3s;
   }
- 
+
   .save-btn.success {
     background: linear-gradient(135deg, #43a047, #388e3c);
     box-shadow: 0 4px 16px rgba(56,142,60,0.35);
   }
- 
+
   .save-btn.loading { opacity: 0.7; cursor: not-allowed; }
- 
+
   .tagline {
     text-align: center;
     font-size: 11px;
@@ -346,7 +346,7 @@
     margin-top: 10px;
     padding-bottom: 4px;
   }
- 
+
   /* TOAST */
   .toast {
     position: fixed;
@@ -362,46 +362,46 @@
     transition: transform 0.3s ease;
     white-space: nowrap;
   }
- 
+
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error { background: #c9563e; }
   .toast.success-toast { background: #388e3c; }
 </style>
 </head>
 <body>
- 
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
- 
+
 <!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div style="font-size:36px;margin-bottom:12px;">🤰</div>
   <h1>Subharathna's Food Diary</h1>
   <p>One-time setup — paste your Google service account credentials below. These are stored only on this device.</p>
- 
+
   <div class="setup-card">
     <div class="warning-box">
       🔐 Your credentials stay on this device only — never sent anywhere except Google's servers directly.
     </div>
- 
+
     <label>Spreadsheet ID</label>
     <input type="text" id="sheet-id" placeholder="Paste your Google Sheet ID here" />
- 
+
     <label>Client Email</label>
     <input type="text" id="client-email" placeholder="pregnancy-diary@....iam.gserviceaccount.com" />
- 
+
     <label>Private Key (paste full key including -----BEGIN... END-----)</label>
     <textarea id="private-key" placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
- 
+
     <button class="btn-primary" onclick="saveSetup()">Connect to Google Sheets →</button>
   </div>
- 
+
   <p style="margin-top:16px;font-size:11px;color:#ccc;">
     Find Sheet ID in your sheet's URL:<br/>
     docs.google.com/spreadsheets/d/<strong>[THIS PART]</strong>/edit
   </p>
 </div>
- 
+
 <!-- MAIN APP -->
 <div id="app-screen">
   <div class="header">
@@ -413,9 +413,9 @@
     </div>
     <div class="progress-label" id="progress-label">0 / 7 meals logged</div>
   </div>
- 
+
   <div class="content">
- 
+
     <!-- Water -->
     <div class="water-card">
       <div class="card-title">💧 Water Intake</div>
@@ -428,16 +428,16 @@
         <button class="water-btn" onclick="changeWater(1)">+</button>
       </div>
     </div>
- 
+
     <!-- Meals -->
     <div id="meals-container"></div>
- 
+
     <!-- Notes -->
     <div class="notes-card">
       <div class="card-title">📝 Today's Note</div>
-      <textarea id="daily-note" placeholder="Symptoms, cravings, how you felt today, doctor advice..."></textarea>
+      <textarea id="daily-note" placeholder="Symptoms, cravings, how you felt today, doctor advice..." oninput="saveToLocalStorage()"></textarea>
     </div>
- 
+
     <!-- Tips -->
     <div class="tips-card">
       <div class="tips-title">💡 6th Month Reminders</div>
@@ -448,16 +448,16 @@
       <div class="tip-item"><span class="tip-dot">•</span> 30 min gentle walk daily if comfortable</div>
       <div class="tip-item"><span class="tip-dot">•</span> Watch for puffiness in face, hands, ankles</div>
     </div>
- 
+
     <div style="height:20px"></div>
   </div>
- 
+
   <div class="save-wrap">
     <button class="save-btn" id="save-btn" onclick="saveToSheet()">Save to Google Sheets</button>
     <div class="tagline">Baby is growing beautifully 🤍</div>
   </div>
 </div>
- 
+
 <script>
 const MEAL_SLOTS = [
   { id: "morning", label: "🌅 Morning (Empty Stomach)", time: "6:00 – 7:00 AM", placeholder: "e.g. Warm water, soaked raisins..." },
@@ -468,16 +468,16 @@ const MEAL_SLOTS = [
   { id: "dinner", label: "🌙 Dinner", time: "7:30 – 8:30 PM", placeholder: "e.g. 2 chapathi, paneer sabzi, curd..." },
   { id: "night", label: "🥛 Night (if anything)", time: "After 9:00 PM", placeholder: "e.g. Warm turmeric milk..." },
 ];
- 
+
 let waterCount = 0;
 let config = {};
- 
+
 function getTodayLabel() {
   return new Date().toLocaleDateString("en-IN", {
     weekday: "long", day: "numeric", month: "long", year: "numeric"
   });
 }
- 
+
 function getTodayRow() {
   // Use local date (IST), not UTC — avoids date mismatch in India
   const now = new Date();
@@ -486,28 +486,28 @@ function getTodayRow() {
   const dd = String(now.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 }
- 
+
 // ── Setup ──────────────────────────────────────────────
 function saveSetup() {
   const sheetId = document.getElementById("sheet-id").value.trim();
   const clientEmail = document.getElementById("client-email").value.trim();
   const privateKey = document.getElementById("private-key").value.trim();
- 
+
   if (!sheetId || !clientEmail || !privateKey) {
     showToast("Please fill in all three fields", "error"); return;
   }
- 
+
   config = { sheetId, clientEmail, privateKey };
   localStorage.setItem("diary_config", JSON.stringify(config));
   initApp();
 }
- 
+
 function loadConfig() {
   const saved = localStorage.getItem("diary_config");
   if (saved) { config = JSON.parse(saved); return true; }
   return false;
 }
- 
+
 // ── App Init ───────────────────────────────────────────
 async function initApp() {
   document.getElementById("setup-screen").style.display = "none";
@@ -515,15 +515,21 @@ async function initApp() {
   document.getElementById("today-label").textContent = getTodayLabel();
   buildMeals();
   buildWater();
-  await loadTodayFromSheet();
+
+  // Step 1: Restore instantly from localStorage (no network needed)
+  const restoredLocal = loadFromLocalStorage();
+  if (restoredLocal) showToast("Restored from local cache ✓", "success");
+
+  // Step 2: Sync from Google Sheet in background (overwrites local if sheet has newer data)
+  loadTodayFromSheet();
 }
- 
+
 // ── Load today's data from Sheet on startup ─────────────
 async function loadTodayFromSheet() {
   try {
     const token = await getAccessToken();
     const today = getTodayRow();
- 
+
     const res = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A:A`,
       { headers: { Authorization: `Bearer ${token}` } }
@@ -533,7 +539,7 @@ async function loadTodayFromSheet() {
     const rows = data.values || [];
     const rowIndex = rows.findIndex(r => r[0] && r[0].trim() === today.trim());
     if (rowIndex === -1) return;
- 
+
     // Fetch the full row
     const actualRow = rowIndex + 1;
     const rowRes = await fetch(
@@ -544,7 +550,7 @@ async function loadTodayFromSheet() {
     const rowData = await rowRes.json();
     const rowValues = (rowData.values || [[]])[0];
     if (!rowValues || rowValues.length < 3) return;
- 
+
     // rowValues: [date, day, food0, qty0, food1, qty1, ... x7 meals, water, note]
     // Meals start at index 2, 2 cols each
     MEAL_SLOTS.forEach((slot, i) => {
@@ -556,21 +562,22 @@ async function loadTodayFromSheet() {
       if (qtyEl)  qtyEl.value = qtyVal;
       if (foodVal) onMealInput(slot.id);
     });
- 
+
     // Water is at index 2 + 7*2 = 16
     const waterVal = parseInt(rowValues[16] || "0");
     if (!isNaN(waterVal)) { waterCount = waterVal; buildWater(); }
- 
+
     // Note is at index 17
     const noteEl = document.getElementById("daily-note");
     if (noteEl) noteEl.value = rowValues[17] || "";
- 
-    showToast("Today's entries loaded ✓", "success");
+
+    saveToLocalStorage(); // keep localStorage in sync with sheet
+    showToast("Synced from Google Sheets ✓", "success");
   } catch (e) {
-    console.warn("Could not load today's data:", e);
+    console.warn("Could not load today's data from sheet:", e);
   }
 }
- 
+
 function buildMeals() {
   const container = document.getElementById("meals-container");
   container.innerHTML = "";
@@ -592,7 +599,7 @@ function buildMeals() {
     container.appendChild(card);
   });
 }
- 
+
 function buildWater() {
   const dotsEl = document.getElementById("water-dots");
   dotsEl.innerHTML = "";
@@ -604,12 +611,13 @@ function buildWater() {
   }
   document.getElementById("water-label").textContent = `${waterCount} glasses · Target: 8–10/day`;
 }
- 
+
 function changeWater(delta) {
   waterCount = Math.max(0, Math.min(12, waterCount + delta));
   buildWater();
+  saveToLocalStorage();
 }
- 
+
 function onMealInput(id) {
   const food = document.getElementById(`food-${id}`).value.trim();
   const card = document.getElementById(`card-${id}`);
@@ -622,15 +630,65 @@ function onMealInput(id) {
     badge.style.display = "none";
   }
   updateProgress();
+  saveToLocalStorage();
 }
- 
+
+function saveToLocalStorage() {
+  const today = getTodayRow();
+  const data = { water: waterCount, note: document.getElementById("daily-note").value };
+  MEAL_SLOTS.forEach(slot => {
+    data[`food_${slot.id}`] = document.getElementById(`food-${slot.id}`)?.value || "";
+    data[`qty_${slot.id}`]  = document.getElementById(`qty-${slot.id}`)?.value  || "";
+  });
+  localStorage.setItem(`diary_${today}`, JSON.stringify(data));
+}
+
+function loadFromLocalStorage() {
+  const today = getTodayRow();
+  const raw = localStorage.getItem(`diary_${today}`);
+  if (!raw) return false;
+  try {
+    const data = JSON.parse(raw);
+    MEAL_SLOTS.forEach(slot => {
+      const foodEl = document.getElementById(`food-${slot.id}`);
+      const qtyEl  = document.getElementById(`qty-${slot.id}`);
+      if (foodEl) foodEl.value = data[`food_${slot.id}`] || "";
+      if (qtyEl)  qtyEl.value  = data[`qty_${slot.id}`]  || "";
+      if (data[`food_${slot.id}`]) onMealInputSilent(slot.id);
+    });
+    const noteEl = document.getElementById("daily-note");
+    if (noteEl) noteEl.value = data.note || "";
+    if (!isNaN(parseInt(data.water))) {
+      waterCount = parseInt(data.water);
+      buildWater();
+    }
+    updateProgress();
+    return true;
+  } catch(e) { return false; }
+}
+
+// Silent version — updates card state without re-saving to localStorage (avoids loop)
+function onMealInputSilent(id) {
+  const food = document.getElementById(`food-${id}`)?.value.trim();
+  const card = document.getElementById(`card-${id}`);
+  const badge = document.getElementById(`badge-${id}`);
+  if (!card || !badge) return;
+  if (food) {
+    card.classList.add("filled");
+    badge.style.display = "inline-block";
+  } else {
+    card.classList.remove("filled");
+    badge.style.display = "none";
+  }
+}
+
 function updateProgress() {
   const filled = MEAL_SLOTS.filter(s => document.getElementById(`food-${s.id}`)?.value?.trim()).length;
   const pct = (filled / MEAL_SLOTS.length) * 100;
   document.getElementById("progress-fill").style.width = pct + "%";
   document.getElementById("progress-label").textContent = `${filled} / ${MEAL_SLOTS.length} meals logged`;
 }
- 
+
 // ── Google Sheets JWT Auth ─────────────────────────────
 async function getAccessToken() {
   const now = Math.floor(Date.now() / 1000);
@@ -642,10 +700,10 @@ async function getAccessToken() {
     exp: now + 3600,
     iat: now
   };
- 
+
   const encode = obj => btoa(JSON.stringify(obj)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   const signingInput = `${encode(header)}.${encode(payload)}`;
- 
+
   // Import private key — handle both literal \n and real newlines
   let rawKey = config.privateKey;
   rawKey = rawKey.replace(/\\n/g, "\n"); // convert escaped \n to real newlines
@@ -659,40 +717,40 @@ async function getAccessToken() {
     { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
     false, ["sign"]
   );
- 
+
   const signature = await crypto.subtle.sign(
     "RSASSA-PKCS1-v1_5", cryptoKey,
     new TextEncoder().encode(signingInput)
   );
- 
+
   const sig = btoa(String.fromCharCode(...new Uint8Array(signature)))
     .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
- 
+
   const jwt = `${signingInput}.${sig}`;
- 
+
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
   });
- 
+
   const data = await res.json();
   if (!data.access_token) throw new Error("Auth failed: " + JSON.stringify(data));
   return data.access_token;
 }
- 
+
 // ── Save to Sheet ──────────────────────────────────────
 async function saveToSheet() {
   const btn = document.getElementById("save-btn");
   btn.textContent = "Saving...";
   btn.classList.add("loading");
- 
+
   try {
     const token = await getAccessToken();
     const today = getTodayRow();
     const dayName = new Date().toLocaleDateString("en-IN", { weekday: "long" });
     const note = document.getElementById("daily-note").value.trim();
- 
+
     const rowValues = [today, dayName];
     MEAL_SLOTS.forEach(slot => {
       rowValues.push(document.getElementById(`food-${slot.id}`).value.trim());
@@ -700,10 +758,10 @@ async function saveToSheet() {
     });
     rowValues.push(waterCount.toString());
     rowValues.push(note);
- 
+
     // Calculate last column letter (A=1, B=2 ... R=18)
     const lastCol = String.fromCharCode(64 + rowValues.length);
- 
+
     // Fetch ALL data in column A to find today's date row
     const sheetRes = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A:A`,
@@ -712,14 +770,14 @@ async function saveToSheet() {
     if (!sheetRes.ok) throw new Error("Failed to read sheet: " + await sheetRes.text());
     const sheetData = await sheetRes.json();
     const rows = sheetData.values || [];
- 
+
     // Find row index (0-based) where column A matches today's date string
     // Log all found dates for debugging
     console.log("Today (local):", today);
     console.log("Sheet column A values:", rows.map(r => r[0]));
     const rowIndex = rows.findIndex(r => r[0] && r[0].trim() === today.trim());
     console.log("Matched row index:", rowIndex);
- 
+
     if (rowIndex === -1) {
       // No row for today — append a brand new row
       const appendUrl = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/A1:${lastCol}1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
@@ -743,7 +801,7 @@ async function saveToSheet() {
       );
       if (!updateRes.ok) throw new Error("Update failed: " + await updateRes.text());
     }
- 
+
     btn.textContent = "✓ Saved to Google Sheets!";
     btn.classList.remove("loading");
     btn.classList.add("success");
@@ -752,7 +810,7 @@ async function saveToSheet() {
       btn.textContent = "Save to Google Sheets";
       btn.classList.remove("success");
     }, 3000);
- 
+
   } catch (err) {
     btn.textContent = "Save to Google Sheets";
     btn.classList.remove("loading");
@@ -760,7 +818,7 @@ async function saveToSheet() {
     console.error("saveToSheet error:", err);
   }
 }
- 
+
 // ── Toast ──────────────────────────────────────────────
 function showToast(msg, type = "") {
   const t = document.getElementById("toast");
@@ -768,7 +826,7 @@ function showToast(msg, type = "") {
   t.className = "toast show" + (type === "error" ? " error" : type === "success" ? " success-toast" : "");
   setTimeout(() => { t.className = "toast"; }, 3000);
 }
- 
+
 // ── Boot ───────────────────────────────────────────────
 if (loadConfig()) {
   initApp();
