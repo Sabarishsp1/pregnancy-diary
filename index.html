@@ -663,14 +663,16 @@ async function saveToSheet() {
         }
       );
     } else {
-      // Update existing row
-      const range = `A${rowIndex + 1}`;
+      // Update existing row — specify full range so all columns get overwritten
+      const actualRow = rowIndex + 1;
+      const lastCol = String.fromCharCode(64 + rowValues.length);
+      const range = `A${actualRow}:${lastCol}${actualRow}`;
       await fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}?valueInputOption=RAW`,
+        `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${encodeURIComponent(range)}?valueInputOption=RAW`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ values: [rowValues] })
+          body: JSON.stringify({ range, values: [rowValues] })
         }
       );
     }
