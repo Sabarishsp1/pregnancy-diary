@@ -630,9 +630,9 @@ function buildRowValues(dateKey, dayName, overrides) {
   const vals = [dateKey, dayName];
   MEAL_SLOTS.forEach(s=>{ vals.push(get(`food-${s.id}`)); vals.push(get(`qty-${s.id}`)); });
   vals.push(String(overrides?overrides.water:waterUnits));
-  vals.push(String(overrides?overrides.walk:walkMins));
-  vals.push(get("daily-note"));
-  // Weight: read from weekly log (index 19)
+  vals.push(get("daily-note"));         // R (index 17) — matches sheet header "Today's Note / Symptoms"
+  vals.push(String(overrides?overrides.walk:walkMins)); // S (index 18) — Walk Time
+  // Weight: T (index 19)
   const wkKey = getWeekStartKey();
   const wlog  = JSON.parse(localStorage.getItem("weight_log")||"{}");
   vals.push(String(wlog[wkKey]||""));
@@ -683,8 +683,8 @@ async function loadTodayFromSheet() {
       if(rv[2+i*2]) onMealInputSilent(s.id);
     });
     waterUnits=parseInt(rv[16]||0); updateWaterUI();
-    walkMins  =parseInt(rv[17]||0); updateWalkUI();
-    const n=document.getElementById("daily-note"); if(n) n.value=rv[18]||"";
+    const n=document.getElementById("daily-note"); if(n) n.value=rv[17]||""; // R = note
+    walkMins  =parseInt(rv[18]||0); updateWalkUI(); localStorage.setItem("walk_"+today,String(walkMins)); // S = walk
     // Weight from sheet (col 19) — store in weekly log
     if (rv[19]&&parseFloat(rv[19])) {
       const wlog=JSON.parse(localStorage.getItem("weight_log")||"{}");
@@ -776,7 +776,7 @@ async function buildDashboard() {
       // Cache to localStorage
       const cache={}; 
       MEAL_SLOTS.forEach((s,mi)=>{ cache[`food_${s.id}`]=rv[2+mi*2]||""; cache[`qty_${s.id}`]=rv[3+mi*2]||""; });
-      cache.water=rv[16]||"0"; cache.walk=rv[17]||"0"; cache.note=rv[18]||"";
+      cache.water=rv[16]||"0"; cache.note=rv[17]||""; cache.walk=rv[18]||"0"; // R=note, S=walk
       if(rv[19]) { const wlog=JSON.parse(localStorage.getItem("weight_log")||"{}"); wlog[getWeekStartKey(w.date)]=parseFloat(rv[19]); localStorage.setItem("weight_log",JSON.stringify(wlog)); }
       localStorage.setItem(`diary_${w.key}`,JSON.stringify(cache));
     }
